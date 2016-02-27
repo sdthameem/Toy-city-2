@@ -1,3 +1,5 @@
+start
+
 def start
 	setup_files
 	create_report
@@ -10,6 +12,44 @@ def setup_files
 	$products_hash = JSON.parse(file)
 	$report_file = File.new("report.txt", "w+")
 end
+
+def create_report
+	print_sales_report_art
+	print_todays_date
+	loop_products_hash
+	products_report
+	brands_report
+end
+
+def print_sales_report_art
+    puts"  #####                                 ######                                   " 
+    puts" #     #   ##   #      ######  ####     #     # ###### #####   ####  #####  #####"
+    puts" #        #  #  #      #      #         #     # #      #    # #    # #    #   #  "
+    puts"  #####  #    # #      #####   ####     ######  #####  #    # #    # #    #   #  "
+    puts"       # ###### #      #           #    #   #   #      #####  #    # #####    #  "
+    puts" #     # #    # #      #      #    #    #    #  #      #      #    # #   #    #  "
+    puts"  #####  #    # ###### ######  ####     #     # ###### #       ####  #    #   #  "
+    puts"******************************************************************************** "            
+end
+
+def print_todays_date 
+	# Print today's date
+	puts "Date : #{Time.now.strftime("%m/%d/%Y")}"
+end
+
+def products_report
+	print_products_in_art
+    calculate_product_details
+end
+
+def brands_report
+    print_brands_in_art
+    calculate_brands_details
+end    
+
+
+
+
 
 # Print "Sales Report" in ascii art
 
