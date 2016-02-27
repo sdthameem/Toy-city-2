@@ -71,15 +71,14 @@ def get_brand_revenue_count(brand_key_details,brand_revenue,brand_purchase_cnt)
 	brand_key_details["purchases"].each do |purchase_brand|
        brand_purchase_cnt = increment_counter(brand_purchase_cnt)
        brand_revenue = sum(sum: brand_revenue , sum1: purchase_brand["price"] , sum2: purchase_brand["shipping"] )
-       return brand_revenue , brand_purchase_cnt
     end
+    return brand_revenue , brand_purchase_cnt
 end
 
 def brands_report(brand_name,brand_details)
 # Initializing variables
     toys_in_stock = 0
     brand_revenue,brand_avg_price, brand_purchase_cnt = 0.0, 0.0, 0
- #       fetch_sub_group_array(brand_details)
 # Fetching each value details in a brand and doing calculation
   brand_details.each do |brand_key_details|  	
     toys_in_stock = sum(sum: toys_in_stock, sum1: brand_key_details["stock"])
