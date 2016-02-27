@@ -1,26 +1,3 @@
-start
-
-def start
-	setup_files
-	create_report
-end
-
-def setup_files
-    require 'json'
-	path = File.join(File.dirname(__FILE__), '../data/products.json')
-	file = File.read(path)
-	$products_hash = JSON.parse(file)
-	$report_file = File.new("report.txt", "w+")
-end
-
-def create_report
-	print_sales_report_art
-	print_todays_date
-	group_array=create_group_array
-	fetch_group_array(group_array)
-	products_report
-	brands_report
-end
 
 def print_sales_report_art
     puts"  #####                                 ######                                   " 
@@ -38,69 +15,27 @@ def print_todays_date
 	puts "Date : #{Time.now.strftime("%m/%d/%Y")}"
 end
 
-def create_group_array
-	group_array= products_hash["items"].group_by {|name| name["brand"]}
-	return group_array
-end    
+#def products_report(product_details)
 
-def fetch_group_array(group_array)
-	group_array.each do |brand_name,brand_details|
-# Initializing variables
-        toys_in_stock = 0
-        brand_revenue,brand_avg_price, brand_purchase_cnt = 0.0, 0.0, 0
-        fetch_sub_group_array(brand_details)
-
-
-
-# Fetching each value details in a brand and doing calculation
-  brand_details.each do |brand_key_details|
-    toys_in_stock = counter_sum(toys_in_stock,sum: brand_key_details["stock"])
-  
-    brand_key_details["purchases"]. each do |purchase_brand|
-       brand_purchase_cnt = counter_sum(brand_purchase_cnt)
-       brand_revenue += purchase_brand["price"] + purchase_brand["shipping"]
-    end
-#Calculating average price 
-    brand_avg_price = calculate_avg_price(brand_revenue,brand_purchase_cnt)
-  end
-
-# Printing the required data for each brand
-  print_products_report(brand_name,toys_in_stock, brand_avg_price,brand_revenue)
-  puts brand_name
-  puts "*********************************"
-  puts "Toys in Stock: #{toys_in_stock}"
-  puts "Average price: #{brand_avg_price.round(2)}"
-  puts "Total Revenue: #{brand_revenue.round(2)} \n\n"
+def increment_counter(counter)
+	counter += 1
+	return counter
 end
 
-def counter_sum(counter,options = {})
-	if options[:sum]
-		counter += sum
-		return counter
-	else
-		counter += 1
-		return counter
+def sum(options = {})
+	if options[:sum] and options[:sum1] and options[:sum2]
+		options[:sum] +=  options[:sum1] + options[:sum2]
+		return options[:sum]
+	end
+	if options[:sum] and options[:sum1]
+		options[:sum] +=  options[:sum1]
+		return options[:sum]
 	end
 end
 
 def calculate_avg_price(revenue,count)
 	avg_price = revenue / count
 	return avg_price
-end
-
-def print_products_report(options = {})
-	puts name1
-
-
-
-
-
-
-
-
-def products_report
-	print_products_in_art
-    calculate_product_details
 end
 
 def print_products_in_art
@@ -114,11 +49,13 @@ def print_products_in_art
     puts "|_|                                       "
 end
 
-
-def brands_report
-    print_brands_in_art
-    calculate_brands_details
-end    
+def print_brands_report(brand_name,toys_in_stock, brand_avg_price,brand_revenue)
+	puts brand_name
+    puts "*********************************"
+    puts "Toys in Stock: #{toys_in_stock}"
+    puts "Average price: #{brand_avg_price.round(2)}"
+    puts "Total Revenue: #{brand_revenue.round(2)} \n\n"
+end
 
 def print_brands_in_art
     puts " _                         _     "
@@ -130,7 +67,70 @@ def print_brands_in_art
 	puts
 end
 
+def get_brand_revenue_count(brand_key_details,brand_revenue,brand_purchase_cnt)
+	brand_key_details["purchases"].each do |purchase_brand|
+       brand_purchase_cnt = increment_counter(brand_purchase_cnt)
+       brand_revenue = sum(sum: brand_revenue , sum1: purchase_brand["price"] , sum2: purchase_brand["shipping"] )
+       return brand_revenue , brand_purchase_cnt
+    end
+end
 
+def brands_report(brand_name,brand_details)
+# Initializing variables
+    toys_in_stock = 0
+    brand_revenue,brand_avg_price, brand_purchase_cnt = 0.0, 0.0, 0
+ #       fetch_sub_group_array(brand_details)
+# Fetching each value details in a brand and doing calculation
+  brand_details.each do |brand_key_details|  	
+    toys_in_stock = sum(sum: toys_in_stock, sum1: brand_key_details["stock"])
+    brand_revenue , brand_purchase_cnt = get_brand_revenue_count(brand_key_details,brand_revenue,brand_purchase_cnt)
+#Calculating average price 
+    brand_avg_price = calculate_avg_price(brand_revenue,brand_purchase_cnt)
+  end
+# Printing the required data for each brandbrand_revenue,
+  print_brands_report(brand_name,toys_in_stock, brand_avg_price,brand_revenue)
+
+end
+
+def use_group_array(group_array)
+	group_array.each_with_index do |(name,details),index|
+        if index == 0
+        	print_products_in_art
+        end
+#       products_report(details)
+        if index == 0
+        	print_brands_in_art
+        end
+        brands_report(name,details)
+    end
+end
+
+def create_group_array
+	group_array= $products_hash["items"].group_by {|name| name["brand"]}
+	return group_array
+end    
+
+def create_report
+	print_sales_report_art
+	print_todays_date
+	group_array=create_group_array
+	use_group_array(group_array)
+end
+
+def setup_files
+    require 'json'
+	path = File.join(File.dirname(__FILE__), '../data/products.json')
+	file = File.read(path)
+	$products_hash = JSON.parse(file)
+#	$report_file = File.new("report.txt", "w+")
+end
+
+def start
+	setup_files
+	create_report
+end
+
+start
 
 
 # Print "Sales Report" in ascii art
