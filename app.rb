@@ -1,13 +1,14 @@
 
 def print_sales_report_art
-    puts"  #####                                 ######                                   " 
-    puts" #     #   ##   #      ######  ####     #     # ###### #####   ####  #####  #####"
-    puts" #        #  #  #      #      #         #     # #      #    # #    # #    #   #  "
-    puts"  #####  #    # #      #####   ####     ######  #####  #    # #    # #    #   #  "
-    puts"       # ###### #      #           #    #   #   #      #####  #    # #####    #  "
-    puts" #     # #    # #      #      #    #    #    #  #      #      #    # #   #    #  "
-    puts"  #####  #    # ###### ######  ####     #     # ###### #       ####  #    #   #  "
-    puts"******************************************************************************** "            
+     puts"\n********************************************************************************"            
+    puts"  #####                                 ######                                     " 
+    puts" #     #   ##   #      ######  ####     #     # ###### #####   ####  #####  #####  "
+    puts" #        #  #  #      #      #         #     # #      #    # #    # #    #   #    "
+    puts"  #####  #    # #      #####   ####     ######  #####  #    # #    # #    #   #    "
+    puts"       # ###### #      #           #    #   #   #      #####  #    # #####    #    "
+    puts" #     # #    # #      #      #    #    #    #  #      #      #    # #   #    #    "
+    puts"  #####  #    # ###### ######  ####     #     # ###### #       ####  #    #   #    "
+    puts"********************************************************************************\n "            
 end
 
 def print_todays_date 
@@ -45,7 +46,7 @@ def print_products_in_art
     puts "| |_) | | | (_) | (_| | |_| | (__| |_\\__ \\"
     puts "| .__/|_|  \\___/ \\__,_|\\__,_|\\___|\\__|___/"
     puts "| |                                       "
-    puts "|_|                                       "
+    puts "|_|                                       \n\n"
 end
 
 def get_product_sales_count(toy_name,sales_sum,product_purchase_cnt)
@@ -70,7 +71,7 @@ def products_report(product_details)
     product_details.each do |toy_name|
 
 # Initializing variables
-        avg_price, avg_discount = 0.0, 0.0
+        avg_discount = 0.0
 
 # Fetching details of purchases for each product 
         sales_sum,product_purchase_cnt = get_product_sales_count(toy_name,sales_sum = 0.0 ,product_purchase_cnt =0)
@@ -162,7 +163,7 @@ def setup_files
 	path = File.join(File.dirname(__FILE__), '../data/products.json')
 	file = File.read(path)
 	$products_hash = JSON.parse(file)
-#	$report_file = File.new("report.txt", "w+")
+    $report_file = File.new("report.txt", "w+")
 end
 
 
