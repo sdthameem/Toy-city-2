@@ -17,8 +17,8 @@ def print_todays_date
 	# Print today's date
 	$report_file.puts "Date : #{Time.now.strftime("%m/%d/%Y")}"
 end
-
-##**************Reusable methods section-start********************************************
+#*********************************************************************************************************
+##**************Reusable methods section-start************************************************************
 
 def increment_counter(counter)
     counter += 1
@@ -40,11 +40,18 @@ def calculate_avg_price(revenue,count)
     avg_price = revenue / count
     return avg_price
 end
-##**************Reusable methods section-end****************************************************
+##**************Reusable methods section-end********************************************************
 
-##**********************************************************************************************
+##**************************************************************************************************
 ##*                             PRODUCTS METHODS SECTION
-##**********************************************************************************************
+# For each product in the data set:
+    # Print the name of the toy
+    # Print the retail price of the toy
+    # Calculate and print the total number of purchases
+    # Calculate and print the total amount of sales
+    # Calculate and print the average price the toy sold for
+    # Calculate and print the average discount (% or $) based off the average sales price
+##**************************************************************************************************
 # Print "Products" in ascii art
 def print_products_in_art
     $report_file.puts "                     _            _       "
@@ -68,7 +75,7 @@ def print_products_report(toy_name,full_price,product_purchase_cnt,sales_sum,avg
     $report_file.puts "Average Discount : $#{avg_discount.round(2)} \n\n"  
 end
 
-##**************Calculate revenue and count for products *************************
+##**************Calculate revenue and count for products *******************************************
 def get_product_sales_count(toy_name,sales_sum,product_purchase_cnt)
 	toy_name["purchases"].each do |purchase_num|
         sales_sum = sum(sum: purchase_num["price"] , sum1: purchase_num["shipping"] , sum2: sales_sum)
@@ -96,12 +103,17 @@ def products_report(product_details)
         print_products_report(toy_name["title"],toy_name["full-price"],product_purchase_cnt,sales_sum,avg_price,avg_discount)
     end
 end
-##************************************************************************************************
-##************************************************************************************************
+##****************************************************************************************************************
+##****************************************************************************************************************
 
-##**********************************************************************************************
-##*                             BRAND METHODS SECTION
-##**********************************************************************************************
+##****************************************************************************************************************
+##                             BRAND METHODS SECTION
+# For each brand in the data set:
+    # Print the name of the brand
+    # Count and print the number of the brand's toys we stock
+    # Calculate and print the average price of the brand's toys
+    # Calculate and print the total sales volume of all the brand's toys combined
+##****************************************************************************************************************
 # Print "Brands" in ascii art
 def print_brands_in_art
     $report_file.puts " _                         _     "
@@ -122,7 +134,7 @@ def print_brands_report(sub_array)
     $report_file.puts "Total Revenue: #{sub_array[3].round(2)} \n\n"
 end
 
-##**************Calculate revenue and count for products *************************
+##**************Calculate revenue and count for products *********************************************************
 def get_brand_revenue_count(brand_key_details,brand_revenue,brand_purchase_cnt)
 	brand_key_details["purchases"].each do |purchase_brand|
        brand_purchase_cnt = increment_counter(brand_purchase_cnt)
@@ -147,8 +159,8 @@ def brands_report(brand_name,brand_details)
 
   return brand_name,toys_in_stock, brand_avg_price,brand_revenue
 end
-##************************************************************************************************
-##************************************************************************************************
+##***************************************************************************************************************
+##***************************************************************************************************************
 
 
 ###Creating a new array with group by brands and then fetching each hash value pair-start
@@ -157,6 +169,7 @@ def create_group_array
     return group_array
 end 
 
+#Call methods to get Products, Brand details and write to report file
 def use_group_array(group_array)
 	brand_report_array = []
     group_array.each_with_index do |(name,details),index|
@@ -174,7 +187,7 @@ def use_group_array(group_array)
     end
 end
 
-###Print main heading and call methods to get Products and Brand details
+###Print main heading 
 def create_report
 	print_sales_report_art
 	print_todays_date
@@ -182,7 +195,7 @@ def create_report
 	use_group_array(group_array)
 end
 
-###Parsing file method
+###Parsing input file and creating output file
 def setup_files
     require 'json'
 	path = File.join(File.dirname(__FILE__), '../data/products.json')
@@ -203,17 +216,5 @@ start
 
 
 
-# For each product in the data set:
-	# Print the name of the toy
-	# Print the retail price of the toy
-	# Calculate and print the total number of purchases
-	# Calculate and print the total amount of sales
-	# Calculate and print the average price the toy sold for
-	# Calculate and print the average discount (% or $) based off the average sales price
 
 
-# For each brand in the data set:
-	# Print the name of the brand
-	# Count and print the number of the brand's toys we stock
-	# Calculate and print the average price of the brand's toys
-	# Calculate and print the total sales volume of all the brand's toys combined
