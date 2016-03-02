@@ -20,11 +20,6 @@ end
 #*********************************************************************************************************
 ##**************Reusable methods section-start************************************************************
 
-def increment_counter(counter)
-    counter += 1
-    return counter
-end
-
 def sum(options = {})
     if options[:sum] and options[:sum1] and options[:sum2]
         options[:sum] +=  options[:sum1] + options[:sum2]
@@ -76,12 +71,13 @@ def print_products_report(toy_name,full_price,product_purchase_cnt,sales_sum,avg
 end
 
 ##**************Calculate revenue and count for products *******************************************
-def get_product_sales_count(toy_name,sales_sum,product_purchase_cnt)
+def get_product_sales_count(toy_name,sales_sum,purchase_price_sum,product_purchase_cnt)
 	toy_name["purchases"].each do |purchase_num|
         sales_sum = sum(sum: purchase_num["price"] , sum1: purchase_num["shipping"] , sum2: sales_sum)
-        product_purchase_cnt =  increment_counter(product_purchase_cnt)
+        purchase_price_sum = sum(sum: purchase_num["price"] ,sum1: purchase_price_sum)
+        product_purchase_cnt +=  1
     end
-    return sales_sum,product_purchase_cnt
+    return sales_sum,purchase_price_sum,product_purchase_cnt
 end
 
 def products_report(product_details)
@@ -91,13 +87,14 @@ def products_report(product_details)
         avg_discount = 0.0
 
 # Fetching details of purchases for each product 
-        sales_sum,product_purchase_cnt = get_product_sales_count(toy_name,sales_sum = 0.0 ,product_purchase_cnt =0)
+        sales_sum,purchase_price_sum,product_purchase_cnt = get_product_sales_count(toy_name,sales_sum = 0.0,purchase_price_sum=0.0 ,product_purchase_cnt =0)
 
 # Calculating average price
         avg_price = calculate_avg_price(sales_sum,product_purchase_cnt)
+        avg_purchase_price = calculate_avg_price(purchase_price_sum,product_purchase_cnt)
 
 # For calculating the average discount , converting the string data type full-price to float data type
-        avg_discount = toy_name["full-price"].to_f - avg_price
+        avg_discount = toy_name["full-price"].to_f - avg_purchase_price
 
 # Printing the required data for each product
         print_products_report(toy_name["title"],toy_name["full-price"],product_purchase_cnt,sales_sum,avg_price,avg_discount)
@@ -137,7 +134,7 @@ end
 ##**************Calculate revenue and count for products *********************************************************
 def get_brand_revenue_count(brand_key_details,brand_revenue,brand_purchase_cnt)
 	brand_key_details["purchases"].each do |purchase_brand|
-       brand_purchase_cnt = increment_counter(brand_purchase_cnt)
+       brand_purchase_cnt += 1
        brand_revenue = sum(sum: brand_revenue , sum1: purchase_brand["price"] , sum2: purchase_brand["shipping"] )
     end
     return brand_revenue , brand_purchase_cnt
